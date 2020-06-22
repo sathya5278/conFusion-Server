@@ -26,9 +26,7 @@ var dishRouter = require('./routes/dishRouter');
 var leaderRouter = require('./routes/leaderRouter');
 var promoRouter = require('./routes/promoRouter');
 
-app.use('/dishes', dishRouter);
-app.use('/leaders', leaderRouter);
-app.use('/promotions', promoRouter);
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -45,48 +43,37 @@ app.use(session({
   saveUninitialized:false,
   store:new FileStore()
 }));
-function auth(req, res, next) {
-  if (!req.session.user) {
-    var authHeader = req.headers.authorization;
-    if (!authHeader) {
-      var err = new Error("You are not authenticated!");
-      res.setHeader('WWW-Authenticate', 'Basic');
-      err.status = 401;
-      next(err);
-      return;
-    }
-    var auth = new Buffer.from(authHeader.split(" ")[1], 'base64').toString().split(":");
-    var username = auth[0];
-    var password = auth[1];
-    if (username === "admin" && password === "password") {
-      req.session.user = "admin";
-      next();
-    }
-    else {
-      var err = new Error("You are not authenticated!");
-      res.setHeader('WWW-Authenticate', 'Basic');
-      err.status = 401;
-      next(err);
-      return;
-    }
-  }
-  else{
-    if(req.session.user==="admin")
-      next();
-    else{
-      var err = new Error("You are not authenticated!");
-      err.status = 401;
-      next(err);
-      return;
-    }
-  }
-
-}
-app.use(auth);
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+function auth (req, res, next) {
+    console.log(req.session);
+
+  if(!req.session.user) {
+      var err = new Error('You are not authenticated!');
+      err.status = 403;
+      return next(err);
+  }
+  else {
+    if (req.session.user === 'authenticated') {
+      next();
+    }
+    else {
+      var err = new Error('You are not authenticated!');
+      err.status = 403;
+      return next(err);
+    }
+  }
+}
+
+app.use(auth);
+
+app.use('/dishes', dishRouter);
+app.use('/leaders', leaderRouter);
+app.use('/promotions', promoRouter);
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
