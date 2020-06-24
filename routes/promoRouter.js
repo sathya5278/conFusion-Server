@@ -11,7 +11,7 @@ var authenticate = require('../authenticate');
 promoRouter.use(bodyParser.json());
 
 promoRouter.route('/')
-.get(authenticate.verifyOrdinaryUser,(req,res,next) =>{
+.get((req,res,next) =>{
    Promotions.find({})
    .then((promotions)=>{
       res.statusCode = 200;
@@ -48,7 +48,7 @@ promoRouter.route('/')
 
 
 promoRouter.route('/:promoId')
-.get(authenticate.verifyOrdinaryUser,(req,res,next) =>{
+.get((req,res,next) =>{
    Promotions.findById(req.params.promoId)
    .then((promotion)=>{
       res.statusCode = 200;

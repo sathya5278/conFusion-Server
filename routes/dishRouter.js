@@ -11,7 +11,7 @@ dishRouter.use(bodyParser.json());
 var authenticate = require('../authenticate');
 
 dishRouter.route('/')
-    .get(authenticate.verifyOrdinaryUser, (req, res, next) => {
+    .get((req, res, next) => {
         Dishes.find({})
             .populate('comments.author')
             .then((dishes) => {
@@ -46,7 +46,7 @@ dishRouter.route('/')
     });
 
 dishRouter.route('/:dishId')
-    .get(authenticate.verifyOrdinaryUser, (req, res, next) => {
+    .get((req, res, next) => {
         Dishes.findById(req.params.dishId)
             .populate('comments.author')
             .then((dish) => {
@@ -83,7 +83,7 @@ dishRouter.route('/:dishId')
 
 
 dishRouter.route('/:dishId/comments')
-    .get(authenticate.verifyOrdinaryUser, (req, res, next) => {
+    .get((req, res, next) => {
         Dishes.findById(req.params.dishId)
             .populate('comments.author')
             .then((dish) => {
@@ -154,7 +154,7 @@ dishRouter.route('/:dishId/comments')
     });
 
 dishRouter.route('/:dishId/comments/:commentId')
-    .get(authenticate.verifyOrdinaryUser, (req, res, next) => {
+    .get((req, res, next) => {
         Dishes.findById(req.params.dishId)
             .populate('comments.author')
             .then((dish) => {
@@ -187,7 +187,7 @@ dishRouter.route('/:dishId/comments/:commentId')
         Dishes.findById(req.params.dishId)
             .then((dish) => {
                 if (dish != null && dish.comments.id(req.params.commentId) != null) {
-                    if (req.user._id.equals(dish.comments.author._id) == 0) {
+                    if (req.user._id.equals(dish.comments.id(req.params.commentId).author._id) == 0) {
                         if (req.body.rating) {
                             dish.comments.id(req.params.commentId).rating = req.body.rating;
                         }
@@ -228,7 +228,7 @@ dishRouter.route('/:dishId/comments/:commentId')
         Dishes.findById(req.params.dishId)
             .then((dish) => {
                 if (dish != null && dish.comments.id(req.params.commentId) != null) {
-                    if (req.user._id.equals(dish.comments.author._id) == 0) {
+                    if (req.user._id.equals(dish.comments.id(req.params.commentId).author._id) == 0) {
                         dish.comments.id(req.params.commentId).remove();
                         dish.save()
                             .then((dish) => {

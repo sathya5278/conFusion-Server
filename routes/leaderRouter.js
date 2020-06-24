@@ -11,7 +11,7 @@ const leaderRouter=express.Router();
 leaderRouter.use(bodyParser.json());
 
 leaderRouter.route('/')
-.get(authenticate.verifyOrdinaryUser,(req,res,next) =>{
+.get((req,res,next) =>{
    Leaders.find({})
    .then((leaders)=>{
       res.statusCode=200;
@@ -45,7 +45,7 @@ leaderRouter.route('/')
 
 
 leaderRouter.route('/:leaderId')
-.get(authenticate.verifyOrdinaryUser,(req,res,next) =>{
+.get((req,res,next) =>{
    Leaders.findById(req.params.leaderId)
    .then((leader)=>{
       res.statusCode = 200;
