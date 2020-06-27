@@ -9,8 +9,8 @@ var FileStore = require('session-file-store')(session);
 var passport = require('passport');
 var authenticate = require('./authenticate');
 var config = require('./config');
-
 const mongoose = require('mongoose');
+const uploadRouter = require('./routes/uploadRouter');
 
 const Dishes = require('./models/dishes');
 
@@ -81,7 +81,7 @@ app.use('/users', usersRouter);
 app.use('/dishes', dishRouter);
 app.use('/leaders', leaderRouter);
 app.use('/promotions', promoRouter);
-
+app.use('/imageUpload',uploadRouter);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // catch 404 and forward to error handler
