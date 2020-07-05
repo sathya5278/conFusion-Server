@@ -32,7 +32,7 @@ A NodeJS secure server for a restaurant application developed using Express fram
         openssl x509 -req -in cert.csr -signkey private.key -out certificate.pem
 
     #### Starting the server
-    Check the output at https://localhost:34430 in your browser.
+    Check the output at https://localhost:3443 in your browser.
  
         npm start
 
